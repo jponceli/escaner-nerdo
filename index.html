@@ -5,239 +5,350 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mi Progreso - Pasaporte de Stands</title>
   <style>
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-      background: #f0f2f5;
-      margin: 0;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
+    :root {
+      --bg: #e9eef3;
+      --surface: #ffffff;
+      --ink: #14283a;
+      --muted: #5d6c7b;
+      --line: #dde4ea;
+      --track: #e3e9ef;
+      --primary: #1f5f8b;
+      --primary-hover: #17496b;
+      --stamp: #1d7a55;
+      --stamp-soft: #dff2e8;
+      --error-bg: #fbe4e4;
+      --error-ink: #8a2323;
+      --radius: 14px;
     }
-    .card {
-      background: white;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      width: 100%;
-      max-width: 400px;
-      text-align: center;
-    }
-    h2 { margin-top: 0; color: #1a1a1a; font-size: 22px; }
-    
-    .input-group {
-      margin: 20px 0;
-    }
-    input[type="text"] {
-      width: 100%;
-      padding: 12px;
-      border: 2px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-      box-sizing: border-box;
-      text-align: center;
-      margin-bottom: 10px;
-    }
-    input[type="text"]:focus {
-      border-color: #007bff;
-      outline: none;
-    }
-    .btn-submit {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: bold;
-      cursor: pointer;
-      width: 100%;
-    }
-    .btn-submit:hover {
-      background: #0056b3;
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0e1620;
+        --surface: #17222f;
+        --ink: #e8eef4;
+        --muted: #9aabbb;
+        --line: #26364a;
+        --track: #263446;
+        --primary: #4f9bd0;
+        --primary-hover: #6aaee0;
+        --stamp: #52c28f;
+        --stamp-soft: #17372b;
+        --error-bg: #3a1c1f;
+        --error-ink: #f2b3b3;
+      }
     }
 
-    .ticket-badge {
-      display: inline-block;
-      background: #e9ecef;
-      padding: 6px 12px;
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      margin: 0;
+      padding: 20px 16px;
+      display: flex;
+      justify-content: center;
+      line-height: 1.45;
+    }
+
+    .card {
+      background: var(--surface);
+      padding: 28px 24px;
       border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(20, 40, 58, 0.12);
+      width: 100%;
+      max-width: 420px;
+      align-self: flex-start;
+    }
+
+    h1 {
+      margin: 0 0 6px;
+      font-size: 24px;
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+      text-align: center;
+    }
+    .lead {
+      margin: 0 0 20px;
+      color: var(--muted);
+      font-size: 14px;
+      text-align: center;
+    }
+
+    /* Formulario */
+    input[type="text"] {
+      width: 100%;
+      padding: 13px 14px;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      background: transparent;
+      color: var(--ink);
+      font-size: 16px;
+      text-align: center;
+      margin-bottom: 10px;
+      transition: border-color 0.2s;
+    }
+    input[type="text"]:focus { border-color: var(--primary); outline: none; }
+
+    /* Botones */
+    .btn {
+      display: block;
+      width: 100%;
+      padding: 13px;
+      border: none;
+      border-radius: 10px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+    .btn:active { transform: scale(0.98); }
+    .btn:focus-visible, input:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+    .btn-primary { background: var(--primary); color: #fff; }
+    .btn-primary:hover { background: var(--primary-hover); }
+    .btn-ghost { background: transparent; color: var(--muted); border: 1px solid var(--line); margin-top: 10px; }
+    .btn-ghost:hover { background: var(--track); }
+
+    /* Resultado */
+    .ticket-badge {
+      display: table;
+      margin: 0 auto 18px;
+      background: var(--track);
+      padding: 6px 14px;
+      border-radius: 999px;
       font-size: 13px;
       font-weight: 600;
-      color: #495057;
-      margin-bottom: 15px;
+      color: var(--muted);
     }
+    .ticket-badge span { color: var(--ink); font-variant-numeric: tabular-nums; }
+
+    .counter {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      font-size: 15px;
+      color: var(--muted);
+    }
+    .counter strong { font-size: 30px; color: var(--ink); font-variant-numeric: tabular-nums; }
+    .counter .pct { font-weight: 600; color: var(--stamp); }
+
     .progress-container {
-      background: #e9ecef;
-      border-radius: 10px;
-      height: 22px;
+      background: var(--track);
+      border-radius: 999px;
+      height: 12px;
       overflow: hidden;
-      margin: 20px 0 10px 0;
+      margin: 10px 0 4px;
     }
     .progress-bar {
-      background: #28a745;
+      background: var(--stamp);
       height: 100%;
       width: 0%;
-      transition: width 0.5s ease-in-out;
+      border-radius: 999px;
+      transition: width 0.6s ease-out;
     }
-    .counter {
-      font-size: 18px;
-      font-weight: bold;
-      color: #333;
-      margin-bottom: 15px;
+
+    .section-title {
+      margin: 24px 0 8px;
+      font-size: 15px;
+      color: var(--ink);
     }
     .stand-list {
       list-style: none;
       padding: 0;
-      margin: 15px 0 0 0;
-      text-align: left;
-      max-height: 220px;
+      margin: 0;
+      max-height: 240px;
       overflow-y: auto;
+      border: 1px solid var(--line);
+      border-radius: 12px;
     }
     .stand-item {
-      padding: 10px 12px;
-      border-bottom: 1px solid #f0f0f0;
+      padding: 11px 14px;
+      border-bottom: 1px solid var(--line);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 12px;
       font-size: 14px;
     }
-    .check { color: #28a745; font-weight: bold; }
+    .stand-item:last-child { border-bottom: none; }
+    .check {
+      flex-shrink: 0;
+      background: var(--stamp-soft);
+      color: var(--stamp);
+      font-size: 12px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+
+    .empty { color: var(--muted); font-size: 14px; margin: 24px 0 0; text-align: center; }
+    .loading { color: var(--muted); font-size: 14px; text-align: center; margin: 12px 0; }
+
     .alert {
-      padding: 12px;
-      border-radius: 8px;
+      padding: 13px 14px;
+      border-radius: 10px;
       font-size: 14px;
-      margin-top: 15px;
+      margin-top: 16px;
     }
-    .alert-success { background: #d4edda; color: #155724; font-weight: bold; }
-    .alert-error { background: #f8d7da; color: #721c24; }
-    .btn-reload {
-      margin-top: 20px;
-      background: #6c757d;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 8px;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      width: 100%;
+    .alert-success { background: var(--stamp-soft); color: var(--stamp); font-weight: 600; }
+    .alert-error { background: var(--error-bg); color: var(--error-ink); }
+
+    .actions { margin-top: 22px; }
+    [hidden] { display: none !important; }
+
+    @media (prefers-reduced-motion: reduce) {
+      * { transition: none !important; }
     }
   </style>
 </head>
 <body>
 
-  <div class="card">
-    <h2>Tu Pasaporte de Stands</h2>
-    
+  <main class="card">
+    <h1>Tu Pasaporte de Stands</h1>
+
     <!-- Formulario para ingresar el número de ticket de forma manual -->
-    <div id="form-container">
-      <p style="color: #666; font-size: 14px; margin-bottom: 15px;">
-        Ingresa el número de tu entrada para ver tus sellos acumulados:
-      </p>
-      <div class="input-group">
-        <input type="text" id="manual-ticket-input" placeholder="Ej: 1234567890">
-        <button class="btn-submit" onclick="consultarManual()">Ver mi progreso</button>
-      </div>
-    </div>
+    <section id="form-container">
+      <p class="lead">Ingresa el número de tu entrada para ver tus sellos acumulados.</p>
+      <input type="text" id="manual-ticket-input" placeholder="Ej: 1234567890"
+             inputmode="numeric" autocomplete="off" aria-label="Número de entrada">
+      <button class="btn btn-primary" id="btn-consultar">Ver mi progreso</button>
+    </section>
 
     <!-- Área de resultados donde se renderiza la información -->
-    <div id="resultado-container" style="display: none;">
+    <section id="resultado-container" hidden>
       <div class="ticket-badge">Entrada N°: <span id="ticket-id">-</span></div>
-      <div id="content"></div>
-    </div>
-  </div>
+      <div id="content" aria-live="polite"></div>
+    </section>
+  </main>
 
   <script>
     // URL de tu Apps Script terminada en /exec
-    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaaNqJqYKEFQy5KgbTUbVVQOi6kX8dYZnU-M2Dzz5x1WWaYvGTqXiIX0246YDYb_Vp/exec"; 
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbxaaNqJqYKEFQy5KgbTUbVVQOi6kX8dYZnU-M2Dzz5x1WWaYvGTqXiIX0246YDYb_Vp/exec";
     const TOTAL_STANDS = 20; // Ajusta al total de stands de tu evento
 
-    // Capturar parámetro ?ticket= de la URL
-    const urlParams = new URLSearchParams(window.location.search);
-    let ticketIdParam = urlParams.get('ticket');
+    const formContainer = document.getElementById('form-container');
+    const resultContainer = document.getElementById('resultado-container');
+    const ticketLabel = document.getElementById('ticket-id');
+    const content = document.getElementById('content');
+    const input = document.getElementById('manual-ticket-input');
 
-    // Si viene en la URL, ocultar el campo de texto y consultar de inmediato
-    if (ticketIdParam) {
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('resultado-container').style.display = 'block';
-      document.getElementById('ticket-id').innerText = ticketIdParam;
-      cargarProgreso(ticketIdParam);
+    // Crea un elemento con clase y texto (el texto se inserta de forma segura)
+    function el(tag, className, text) {
+      const node = document.createElement(tag);
+      if (className) node.className = className;
+      if (text !== undefined) node.textContent = text;
+      return node;
+    }
+
+    function button(label, className, onClick) {
+      const btn = el('button', 'btn ' + className, label);
+      btn.addEventListener('click', onClick);
+      return btn;
+    }
+
+    function mostrarResultado(id) {
+      formContainer.hidden = true;
+      resultContainer.hidden = false;
+      ticketLabel.textContent = id;
+      cargarProgreso(id);
     }
 
     function consultarManual() {
-      const input = document.getElementById('manual-ticket-input').value.trim();
-      if (!input) {
+      const id = input.value.trim();
+      if (!id) {
         alert("Por favor ingresa un número de ticket válido.");
         return;
       }
-      
-      document.getElementById('form-container').style.display = 'none';
-      document.getElementById('resultado-container').style.display = 'block';
-      document.getElementById('ticket-id').innerText = input;
-      cargarProgreso(input);
+      mostrarResultado(id);
+    }
+
+    function cambiarTicket() {
+      resultContainer.hidden = true;
+      formContainer.hidden = false;
+      input.value = '';
+      input.focus();
+    }
+
+    function mostrarError(id, mensaje, conReintento) {
+      content.replaceChildren(el('div', 'alert alert-error', mensaje));
+      if (conReintento) {
+        content.append(button('Reintentar', 'btn-ghost', () => cargarProgreso(id)));
+      }
+    }
+
+    function renderProgreso(id, data) {
+      const visitados = data.totalVisitados;
+      const porcentaje = Math.min(100, Math.round((visitados / TOTAL_STANDS) * 100));
+      const nodes = [];
+
+      // Contador y barra de progreso
+      const counter = el('div', 'counter');
+      const count = el('span');
+      count.append(el('strong', '', visitados), ` de ${TOTAL_STANDS} sellos`);
+      counter.append(count, el('span', 'pct', `${porcentaje}%`));
+
+      const track = el('div', 'progress-container');
+      track.setAttribute('role', 'progressbar');
+      track.setAttribute('aria-valuenow', porcentaje);
+      track.setAttribute('aria-valuemin', 0);
+      track.setAttribute('aria-valuemax', 100);
+      const bar = el('div', 'progress-bar');
+      bar.style.width = porcentaje + '%';
+      track.append(bar);
+      nodes.push(counter, track);
+
+      if (visitados >= TOTAL_STANDS) {
+        nodes.push(el('div', 'alert alert-success',
+          '🎉 ¡Felicitaciones! Has completado el recorrido y estás participando en el sorteo.'));
+      }
+
+      // Lista de stands visitados
+      if (data.stands.length > 0) {
+        const list = el('ul', 'stand-list');
+        data.stands.forEach(stand => {
+          const item = el('li', 'stand-item');
+          item.append(el('span', '', stand), el('span', 'check', '✔ Sellado'));
+          list.append(item);
+        });
+        nodes.push(el('h2', 'section-title', 'Stands visitados'), list);
+      } else {
+        nodes.push(el('p', 'empty', 'Aún no tienes sellos registrados. ¡Visita los stands para comenzar!'));
+      }
+
+      // Acciones
+      const actions = el('div', 'actions');
+      actions.append(
+        button('🔄 Actualizar sellos', 'btn-primary', () => cargarProgreso(id)),
+        button('🔍 Buscar otro ticket', 'btn-ghost', cambiarTicket)
+      );
+      nodes.push(actions);
+
+      content.replaceChildren(...nodes);
     }
 
     function cargarProgreso(id) {
-      const contentDiv = document.getElementById('content');
-      contentDiv.innerHTML = '<p style="color: #666; font-size: 14px;">Consultando tus sellos acumulados...</p>';
+      content.replaceChildren(el('p', 'loading', 'Consultando tus sellos acumulados...'));
 
       fetch(`${SCRIPT_URL}?ticket=${encodeURIComponent(id)}`)
         .then(res => res.json())
         .then(data => {
           if (data.status !== 'success') {
-            contentDiv.innerHTML = `<div class="alert alert-error">${data.message || 'Error al obtener la información'}</div>`;
+            mostrarError(id, data.message || 'Error al obtener la información', false);
             return;
           }
-
-          const visitados = data.totalVisitados;
-          const porcentaje = Math.min(100, Math.round((visitados / TOTAL_STANDS) * 100));
-
-          let html = `
-            <div class="counter">${visitados} de ${TOTAL_STANDS} sellos (${porcentaje}%)</div>
-            <div class="progress-container">
-              <div class="progress-bar" style="width: ${porcentaje}%;"></div>
-            </div>
-          `;
-
-          if (visitados >= TOTAL_STANDS) {
-            html += `
-              <div class="alert alert-success">
-                🎉 ¡Felicitaciones! Has completado el recorrido y estás participando en el sorteo.
-              </div>
-            `;
-          }
-
-          if (data.stands.length > 0) {
-            html += '<h4 style="text-align: left; margin: 20px 0 5px 0; color: #555;">Stands visitados:</h4>';
-            html += '<ul class="stand-list">';
-            data.stands.forEach(stand => {
-              html += `<li class="stand-item"><span>${stand}</span><span class="check">✔ Sellado</span></li>`;
-            });
-            html += '</ul>';
-          } else {
-            html += '<p style="color: #888; font-size: 14px; margin-top: 20px;">Aún no tienes sellos registrados. ¡Visita los stands para comenzar!</p>';
-          }
-
-          html += `
-            <button class="btn-submit" style="margin-top: 20px;" onclick="cargarProgreso('${id}')">🔄 Actualizar sellos</button>
-            <button class="btn-reload" onclick="cambiarTicket()">🔍 Buscar otro ticket</button>
-          `;
-
-          contentDiv.innerHTML = html;
+          renderProgreso(id, data);
         })
-        .catch(err => {
-          contentDiv.innerHTML = `
-            <div class="alert alert-error">Error de conexión al cargar tus datos. Intenta nuevamente.</div>
-            <button class="btn-reload" onclick="cargarProgreso('${id}')">Reintentar</button>
-          `;
+        .catch(() => {
+          mostrarError(id, 'Error de conexión al cargar tus datos. Intenta nuevamente.', true);
         });
     }
 
-    function cambiarTicket() {
-      document.getElementById('resultado-container').style.display = 'none';
-      document.getElementById('form-container').style.display = 'block';
-      document.getElementById('manual-ticket-input').value = '';
-    }
+    // Eventos del formulario
+    document.getElementById('btn-consultar').addEventListener('click', consultarManual);
+    input.addEventListener('keydown', e => { if (e.key === 'Enter') consultarManual(); });
+
+    // Si el ticket viene en la URL (?ticket=...), consultar de inmediato
+    const ticketIdParam = new URLSearchParams(window.location.search).get('ticket');
+    if (ticketIdParam) mostrarResultado(ticketIdParam);
   </script>
 </body>
 </html>
